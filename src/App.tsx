@@ -3,205 +3,163 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { LanguageProvider, useLanguage } from './context/LanguageContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import { ProgressProvider } from './context/ProgressContext';
+import { SubscriptionProvider } from './context/SubscriptionContext';
 import { Header } from './components/Header';
-import { ChatTutor } from './components/ChatTutor';
-import { TextbookExplorer } from './components/TextbookExplorer';
-import { EsslceExamArena } from './components/EsslceExamArena';
-import { StepByStepSolver } from './components/StepByStepSolver';
-import { FormulaCards } from './components/FormulaCards';
-import { SUBJECTS_BY_STREAM, MoETextbookExcerpt } from './data/curriculumData';
-import { BookOpen, ShieldCheck, Heart } from 'lucide-react';
+import { Sidebar } from './components/Sidebar';
+import { TabBar } from './components/TabBar';
+import { ModuleHost } from './components/ModuleHost';
+import { WelcomeGradeModal } from './components/WelcomeGradeModal';
+import { SubscriptionModal } from './components/SubscriptionModal';
+import { AuthModal } from './components/AuthModal';
+import { SmartSearchModal } from './components/student/SmartSearchModal';
+import { SystemModuleId } from './types';
 
-export default function App() {
-  const [currentGrade, setGrade] = useState<'Grade 9' | 'Grade 10' | 'Grade 11' | 'Grade 12'>('Grade 11');
-  const [stream, setStream] = useState<'Natural Science' | 'Social Science' | 'Common'>('Natural Science');
-  const [subject, setSubject] = useState<string>('Physics');
-  const [language, setLanguage] = useState<string>('English');
-  const [learningMode, setLearningMode] = useState<string>('GUIDED');
-  const [activeTab, setActiveTab] = useState<'chat' | 'library' | 'esslce' | 'solver' | 'formulas'>('chat');
-  const [activeExcerpt, setActiveExcerpt] = useState<MoETextbookExcerpt | null>(null);
+function AppContent() {
+  const { t, isRTL } = useLanguage();
+  const { selectedGrade, isGradeLocked } = useAuth();
 
-  // Compute available subjects based on grade and stream
-  let streamKey: keyof typeof SUBJECTS_BY_STREAM = 'General Secondary (Grades 9-10)';
-  if (currentGrade === 'Grade 11' || currentGrade === 'Grade 12') {
-    streamKey = stream === 'Social Science' ? 'Social Science (Grades 11-12)' : 'Natural Science (Grades 11-12)';
-  }
-  const availableSubjects = SUBJECTS_BY_STREAM[streamKey] || ['Physics', 'Mathematics', 'Chemistry', 'Biology', 'English'];
+  // Active module & navigation history stack
+  const [activeModule, setActiveModule] = useState<SystemModuleId>('lesson');
+  const [moduleHistory, setModuleHistory] = useState<SystemModuleId[]>([]);
 
-  // Handle grade change and ensure subject is valid
-  const handleSetGrade = (newGrade: 'Grade 9' | 'Grade 10' | 'Grade 11' | 'Grade 12') => {
-    setGrade(newGrade);
-    let newStreamKey: keyof typeof SUBJECTS_BY_STREAM = 'General Secondary (Grades 9-10)';
-    if (newGrade === 'Grade 11' || newGrade === 'Grade 12') {
-      newStreamKey = stream === 'Social Science' ? 'Social Science (Grades 11-12)' : 'Natural Science (Grades 11-12)';
+  // Mobile drawer state
+  const [isOpenMobileDrawer, setIsOpenMobileDrawer] = useState(false);
+
+  // Modals state
+  const [isWelcomeModalOpen, setIsWelcomeModalOpen] = useState(false);
+  const [isSubscriptionModalOpen, setIsSubscriptionModalOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
+
+  // Keyboard shortcut Cmd+K or Ctrl+K for search
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setIsSearchModalOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  // Auto prompt welcome grade lock modal on first visit if grade not yet locked
+  useEffect(() => {
+    const lockedGrade = localStorage.getItem('app_locked_grade');
+    if (!lockedGrade) {
+      setIsWelcomeModalOpen(true);
     }
-    const subjects = SUBJECTS_BY_STREAM[newStreamKey];
-    if (!subjects.includes(subject)) {
-      setSubject(subjects[0]);
+  }, []);
+
+  // Handle module selection with history stacking
+  const handleSelectModule = (newModule: SystemModuleId) => {
+    if (newModule === 'smart_search') {
+      setIsSearchModalOpen(true);
+      return;
     }
-  };
-
-  const handleSetStream = (newStream: 'Natural Science' | 'Social Science' | 'Common') => {
-    setStream(newStream);
-    const newStreamKey = newStream === 'Social Science' ? 'Social Science (Grades 11-12)' : 'Natural Science (Grades 11-12)';
-    const subjects = SUBJECTS_BY_STREAM[newStreamKey];
-    if (!subjects.includes(subject)) {
-      setSubject(subjects[0]);
+    if (newModule !== activeModule) {
+      setModuleHistory((prev) => [...prev.slice(-15), activeModule]);
+      setActiveModule(newModule);
     }
+    setIsOpenMobileDrawer(false);
   };
 
-  // Cross-component navigations
-  const handleSelectExcerptForChat = (excerpt: MoETextbookExcerpt) => {
-    setActiveExcerpt(excerpt);
-    setActiveTab('chat');
-  };
-
-  const handleSelectExcerptForSolver = (excerpt: MoETextbookExcerpt) => {
-    setActiveExcerpt(excerpt);
-    setActiveTab('solver');
-  };
-
-  const handleAskTutorAboutQuestion = (questionText: string, context: string) => {
-    setActiveExcerpt({
-      id: 'dynamic-esslce',
-      grade: currentGrade,
-      subject: subject as any,
-      stream,
-      unit: 'ESSLCE National Exam Practice',
-      topic: questionText.slice(0, 50) + '...',
-      page: 'National Exam Standard',
-      summary: questionText,
-      keyFormulasOrTerms: [context],
-      ethiopianAnalogy: 'Real National Examination Agency (EAES) question review.',
-    });
-    setActiveTab('chat');
-  };
-
-  const handleSendToChat = (problemText: string, solutionText: string) => {
-    setActiveExcerpt({
-      id: 'dynamic-problem',
-      grade: currentGrade,
-      subject: subject as any,
-      stream,
-      unit: 'Step-by-Step Derivation Lab',
-      topic: problemText.slice(0, 50) + '...',
-      page: 'MoE Derivation Reference',
-      summary: solutionText,
-      keyFormulasOrTerms: [],
-      ethiopianAnalogy: 'Detailed pedagogical calculation review.',
-    });
-    setActiveTab('chat');
-  };
-
-  const handleAskAboutFormula = (topic: string, formula: string) => {
-    setActiveExcerpt({
-      id: 'dynamic-formula',
-      grade: currentGrade,
-      subject: subject as any,
-      stream,
-      unit: 'Formula Deck Review',
-      topic: `${topic} (${formula})`,
-      page: 'Concept Reference',
-      summary: `Inquiry on formula: ${formula}`,
-      keyFormulasOrTerms: [formula],
-      ethiopianAnalogy: '',
-    });
-    setActiveTab('chat');
+  // Handle back navigation
+  const handleNavigateBack = () => {
+    if (moduleHistory.length > 0) {
+      const prev = moduleHistory[moduleHistory.length - 1];
+      setModuleHistory((h) => h.slice(0, -1));
+      setActiveModule(prev);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
-      {/* App Header with Grade, Stream, Subject, Language, and Mode Switches */}
+    <div
+      className={`min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-emerald-500 selection:text-white ${
+        isRTL ? 'rtl-layout' : ''
+      }`}
+    >
+      {/* 1. Global Header Navigation (Houses authorized LanguageSelectorDropdown placement #2) */}
       <Header
-        currentGrade={currentGrade}
-        setGrade={handleSetGrade}
-        stream={stream}
-        setStream={handleSetStream}
-        subject={subject}
-        setSubject={setSubject}
-        language={language}
-        setLanguage={setLanguage}
-        learningMode={learningMode}
-        setLearningMode={setLearningMode}
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        availableSubjects={availableSubjects}
+        onToggleMobileMenu={() => setIsOpenMobileDrawer((prev) => !prev)}
+        onNavigateBack={handleNavigateBack}
+        canGoBack={moduleHistory.length > 0}
+        onOpenSubscriptionModal={() => setIsSubscriptionModalOpen(true)}
+        onOpenAuthModal={() => setIsAuthModalOpen(true)}
       />
 
-      {/* Main Content Body */}
-      <main className="flex-1 pb-10">
-        {activeTab === 'chat' && (
-          <ChatTutor
-            currentGrade={currentGrade}
-            subject={subject}
-            stream={stream}
-            language={language}
-            learningMode={learningMode}
-            setLearningMode={setLearningMode}
-            activeExcerpt={activeExcerpt}
-            onClearActiveExcerpt={() => setActiveExcerpt(null)}
-            onNavigateToExcerpt={(excerpt) => {
-              setActiveExcerpt(excerpt);
-              setActiveTab('library');
-            }}
+      {/* 2. Breadcrumb Navigation & Quick Module Switcher */}
+      <TabBar
+        activeModule={activeModule}
+        onSelectModule={handleSelectModule}
+        onNavigateBack={handleNavigateBack}
+        canGoBack={moduleHistory.length > 0}
+      />
+
+      {/* 3. Main Layout: 24-Module Vertical Sidebar + Module Host Content */}
+      <div className="flex-1 flex min-w-0 max-w-[1920px] w-full mx-auto relative overflow-hidden">
+        {/* Vertical Sidebar Navigation with 5 Categories and Mobile Floating Overlay Drawer */}
+        <Sidebar
+          activeModule={activeModule}
+          onSelectModule={handleSelectModule}
+          isOpenMobile={isOpenMobileDrawer}
+          onCloseMobile={() => setIsOpenMobileDrawer(false)}
+          onNavigateBack={handleNavigateBack}
+          canGoBack={moduleHistory.length > 0}
+        />
+
+        {/* Dynamic Module Host rendering the 24 modules */}
+        <main className="flex-1 min-w-0 bg-slate-950 flex flex-col overflow-y-auto">
+          <ModuleHost
+            activeModule={activeModule}
+            onSelectModule={handleSelectModule}
+            onOpenSubscriptionModal={() => setIsSubscriptionModalOpen(true)}
           />
-        )}
+        </main>
+      </div>
 
-        {activeTab === 'library' && (
-          <TextbookExplorer
-            currentGrade={currentGrade}
-            setGrade={handleSetGrade}
-            subject={subject}
-            setSubject={setSubject}
-            onSelectExcerptForChat={handleSelectExcerptForChat}
-            onSelectExcerptForSolver={handleSelectExcerptForSolver}
-          />
-        )}
+      {/* 4. Welcome / Grade Selection Modal (Houses authorized LanguageSelectorDropdown placement #1) */}
+      <WelcomeGradeModal
+        isOpen={isWelcomeModalOpen}
+        onClose={() => setIsWelcomeModalOpen(false)}
+      />
 
-        {activeTab === 'esslce' && (
-          <EsslceExamArena
-            currentGrade={currentGrade}
-            subject={subject}
-            onAskTutorAboutQuestion={handleAskTutorAboutQuestion}
-          />
-        )}
+      {/* 5. Telebirr & CBE Payment / Subscription Modal */}
+      <SubscriptionModal
+        isOpen={isSubscriptionModalOpen}
+        onClose={() => setIsSubscriptionModalOpen(false)}
+        currentGrade={selectedGrade}
+      />
 
-        {activeTab === 'solver' && (
-          <StepByStepSolver
-            currentGrade={currentGrade}
-            subject={subject}
-            language={language}
-            onSendToChat={handleSendToChat}
-          />
-        )}
+      {/* 6. User Authentication Modal */}
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+      />
 
-        {activeTab === 'formulas' && (
-          <FormulaCards
-            currentGrade={currentGrade}
-            subject={subject}
-            onAskAboutFormula={handleAskAboutFormula}
-          />
-        )}
-      </main>
-
-      {/* Official MoE Footer */}
-      <footer className="border-t border-slate-900 bg-slate-950 px-4 py-6 text-xs text-slate-500">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <ShieldCheck className="w-4 h-4 text-emerald-400" />
-            <span>
-              <strong>NUR AI (ኑር AI)</strong> • Official Ethiopian High School AI Personal Tutor for Grades 9–12
-            </span>
-          </div>
-
-          <div className="flex items-center gap-4 text-[11px] text-slate-400">
-            <span>FDRE Ministry of Education (MoE) New Secondary Curriculum</span>
-            <span>•</span>
-            <span>EAES / ESSLCE Examination Standard</span>
-          </div>
-        </div>
-      </footer>
+      {/* 7. Smart Search Modal */}
+      <SmartSearchModal
+        isOpen={isSearchModalOpen}
+        onClose={() => setIsSearchModalOpen(false)}
+      />
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <LanguageProvider>
+      <AuthProvider>
+        <ProgressProvider>
+          <SubscriptionProvider>
+            <AppContent />
+          </SubscriptionProvider>
+        </ProgressProvider>
+      </AuthProvider>
+    </LanguageProvider>
   );
 }

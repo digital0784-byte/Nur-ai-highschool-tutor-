@@ -1,0 +1,275 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "NUR AI High School Tutor - Firestore Database Blueprint",
+  "version": "1.0.0",
+  "description": "Complete Firestore architecture for the Ethiopian Secondary Education System (Grades 9-12)",
+  "collections": {
+    "users": {
+      "description": "User authentication credentials, roles, and profiles",
+      "fields": {
+        "uid": { "type": "string", "required": true },
+        "email": { "type": "string", "required": true },
+        "displayName": { "type": "string", "required": true },
+        "role": { "type": "string", "enum": ["student", "teacher", "admin", "super_admin"], "required": true },
+        "lockedGrade": { "type": "string", "enum": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"], "required": true },
+        "stream": { "type": "string", "enum": ["Natural Science", "Social Science", "Common"] },
+        "schoolName": { "type": "string" },
+        "preferredLanguage": { "type": "string", "enum": ["am", "om", "ti", "ar", "so", "en"] },
+        "subscriptionStatus": { "type": "string", "enum": ["none", "pending", "active", "expired"] },
+        "createdAt": { "type": "timestamp", "required": true }
+      }
+    },
+    "studentProfiles": {
+      "description": "Granular student study statistics and settings",
+      "fields": {
+        "userId": { "type": "string", "required": true },
+        "currentGrade": { "type": "string", "required": true },
+        "targetUniversityField": { "type": "string" },
+        "dailyGoalMinutes": { "type": "number", "default": 45 },
+        "notificationsEnabled": { "type": "boolean", "default": true }
+      }
+    },
+    "grades": {
+      "description": "Ethiopian secondary education levels 9 through 12",
+      "fields": {
+        "id": { "type": "string", "required": true },
+        "name": { "type": "string", "required": true },
+        "description": { "type": "string" },
+        "curriculumYear": { "type": "string", "default": "2019 E.C." }
+      }
+    },
+    "subjects": {
+      "description": "Curriculum subjects mapped to grades and streams",
+      "fields": {
+        "id": { "type": "string", "required": true },
+        "gradeId": { "type": "string", "required": true },
+        "stream": { "type": "string", "required": true },
+        "nameAmharic": { "type": "string", "required": true },
+        "nameEnglish": { "type": "string", "required": true },
+        "code": { "type": "string" }
+      }
+    },
+    "curriculumUnits": {
+      "description": "Official FDRE MoE chapter units",
+      "fields": {
+        "id": { "type": "string", "required": true },
+        "subjectId": { "type": "string", "required": true },
+        "unitNumber": { "type": "number", "required": true },
+        "title": { "type": "string", "required": true },
+        "competencies": { "type": "array" }
+      }
+    },
+    "lessons": {
+      "description": "In-depth lesson explanations and learning outcomes",
+      "fields": {
+        "id": { "type": "string", "required": true },
+        "unitId": { "type": "string", "required": true },
+        "title": { "type": "string", "required": true },
+        "contentMarkdown": { "type": "string", "required": true },
+        "moeTextbookPage": { "type": "string" },
+        "keyFormulas": { "type": "array" },
+        "ethiopianAnalogy": { "type": "string" }
+      }
+    },
+    "textbooks": {
+      "description": "Official Ministry of Education PDF textbook registry",
+      "fields": {
+        "id": { "type": "string", "required": true },
+        "grade": { "type": "string", "required": true },
+        "subject": { "type": "string", "required": true },
+        "edition": { "type": "string", "default": "2019 E.C." },
+        "pdfUrl": { "type": "string" },
+        "drmProtected": { "type": "boolean", "default": true }
+      }
+    },
+    "supplementaryBooks": {
+      "description": "Approved university and advanced secondary references",
+      "fields": {
+        "id": { "type": "string", "required": true },
+        "title": { "type": "string", "required": true },
+        "author": { "type": "string" },
+        "subject": { "type": "string" },
+        "priorityLevel": { "type": "number", "min": 2, "max": 6 }
+      }
+    },
+    "videoLessons": {
+      "description": "Curated HD video lessons and 2D/3D science animations",
+      "fields": {
+        "id": { "type": "string", "required": true },
+        "subject": { "type": "string", "required": true },
+        "unit": { "type": "string", "required": true },
+        "title": { "type": "string", "required": true },
+        "duration": { "type": "string" },
+        "videoUrl": { "type": "string" }
+      }
+    },
+    "quizzes": {
+      "description": "Interactive multiple choice diagnostic quizzes",
+      "fields": {
+        "id": { "type": "string", "required": true },
+        "lessonId": { "type": "string" },
+        "subject": { "type": "string", "required": true },
+        "grade": { "type": "string", "required": true },
+        "questions": { "type": "array", "required": true }
+      }
+    },
+    "quizAttempts": {
+      "description": "Student quiz submissions, score logs and analytics",
+      "fields": {
+        "id": { "type": "string", "required": true },
+        "userId": { "type": "string", "required": true },
+        "quizId": { "type": "string", "required": true },
+        "scorePercent": { "type": "number", "required": true },
+        "completedAt": { "type": "timestamp", "required": true }
+      }
+    },
+    "entranceExamPapers": {
+      "description": "ESSLCE national exam past papers and simulated mock tests",
+      "fields": {
+        "id": { "type": "string", "required": true },
+        "year": { "type": "string", "required": true },
+        "subject": { "type": "string", "required": true },
+        "stream": { "type": "string", "required": true },
+        "questions": { "type": "array", "required": true },
+        "timeLimitMinutes": { "type": "number", "default": 120 }
+      }
+    },
+    "entranceExamResults": {
+      "description": "Student ESSLCE mock performance metrics and percentiles",
+      "fields": {
+        "id": { "type": "string", "required": true },
+        "userId": { "type": "string", "required": true },
+        "examId": { "type": "string", "required": true },
+        "rawScore": { "type": "number", "required": true },
+        "projectedNationalPercentile": { "type": "number" },
+        "submittedAt": { "type": "timestamp", "required": true }
+      }
+    },
+    "objectivesExams": {
+      "description": "Chapter competency mastery examinations",
+      "fields": {
+        "id": { "type": "string", "required": true },
+        "unitId": { "type": "string", "required": true },
+        "competencyCriteria": { "type": "array" }
+      }
+    },
+    "flashcardDecks": {
+      "description": "Spaced repetition flashcards with formulas and definitions",
+      "fields": {
+        "id": { "type": "string", "required": true },
+        "subject": { "type": "string", "required": true },
+        "cards": { "type": "array", "required": true }
+      }
+    },
+    "academicAssignments": {
+      "description": "Teacher and school homework assignments and projects",
+      "fields": {
+        "id": { "type": "string", "required": true },
+        "grade": { "type": "string", "required": true },
+        "subject": { "type": "string", "required": true },
+        "title": { "type": "string", "required": true },
+        "instructions": { "type": "string" },
+        "dueDate": { "type": "string" }
+      }
+    },
+    "academicSubmissions": {
+      "description": "Student homework uploads and answers",
+      "fields": {
+        "id": { "type": "string", "required": true },
+        "assignmentId": { "type": "string", "required": true },
+        "userId": { "type": "string", "required": true },
+        "submissionText": { "type": "string" },
+        "submittedAt": { "type": "timestamp" },
+        "score": { "type": "number" }
+      }
+    },
+    "aiChatSessions": {
+      "description": "NUR AI Socratic chat threads and RAG interactions",
+      "fields": {
+        "id": { "type": "string", "required": true },
+        "userId": { "type": "string", "required": true },
+        "grade": { "type": "string" },
+        "subject": { "type": "string" },
+        "messages": { "type": "array" },
+        "updatedAt": { "type": "timestamp" }
+      }
+    },
+    "mistakeBook": {
+      "description": "Student weak areas, incorrect quiz answers, and corrections",
+      "fields": {
+        "id": { "type": "string", "required": true },
+        "userId": { "type": "string", "required": true },
+        "subject": { "type": "string", "required": true },
+        "question": { "type": "string", "required": true },
+        "mistakeReason": { "type": "string" },
+        "mastered": { "type": "boolean", "default": false }
+      }
+    },
+    "gamificationProfiles": {
+      "description": "XP points, streaks, level rank (Bronze, Silver, Gold), badges",
+      "fields": {
+        "userId": { "type": "string", "required": true },
+        "xp": { "type": "number", "default": 0 },
+        "streakDays": { "type": "number", "default": 0 },
+        "level": { "type": "string", "default": "Bronze Scholar" },
+        "badges": { "type": "array" }
+      }
+    },
+    "careerGuidanceTracks": {
+      "description": "Ethiopian university field recommendations and STEM tracks",
+      "fields": {
+        "id": { "type": "string", "required": true },
+        "fieldTitle": { "type": "string", "required": true },
+        "requiredStream": { "type": "string" },
+        "targetUniversities": { "type": "array" },
+        "industryOutlook": { "type": "string" }
+      }
+    },
+    "subscriptions": {
+      "description": "Active subscription tiers (160 ETB, 180 ETB, 200 ETB)",
+      "fields": {
+        "id": { "type": "string", "required": true },
+        "userId": { "type": "string", "required": true },
+        "grade": { "type": "string", "required": true },
+        "monthlyFeeETB": { "type": "number", "required": true },
+        "status": { "type": "string", "enum": ["pending", "active", "expired"] },
+        "validUntil": { "type": "string" }
+      }
+    },
+    "payments": {
+      "description": "Telebirr and CBE transaction verification records",
+      "fields": {
+        "id": { "type": "string", "required": true },
+        "userId": { "type": "string", "required": true },
+        "userEmail": { "type": "string", "required": true },
+        "provider": { "type": "string", "enum": ["Telebirr", "Commercial Bank of Ethiopia (CBE)"] },
+        "transactionReference": { "type": "string", "required": true },
+        "amountETB": { "type": "number", "required": true },
+        "status": { "type": "string", "enum": ["pending", "active", "rejected"] },
+        "submittedAt": { "type": "timestamp" },
+        "reviewedBy": { "type": "string" }
+      }
+    },
+    "systemFeedback": {
+      "description": "User bug reports, curriculum suggestions, and feedback",
+      "fields": {
+        "id": { "type": "string", "required": true },
+        "userId": { "type": "string" },
+        "category": { "type": "string" },
+        "message": { "type": "string", "required": true },
+        "submittedAt": { "type": "timestamp" }
+      }
+    },
+    "adminAuditLogs": {
+      "description": "Security audit trails of administrative and financial operations",
+      "fields": {
+        "id": { "type": "string", "required": true },
+        "actorEmail": { "type": "string", "required": true },
+        "action": { "type": "string", "required": true },
+        "target": { "type": "string" },
+        "timestamp": { "type": "timestamp", "required": true },
+        "details": { "type": "string" }
+      }
+    }
+  }
+}

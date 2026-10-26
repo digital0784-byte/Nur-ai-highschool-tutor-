@@ -1,0 +1,162 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isSuperAdmin() {
+      return isAuthenticated() && (
+        request.auth.token.email == 'mejennur669@gmail.com' ||
+        request.auth.token.role == 'super_admin'
+      );
+    }
+
+    function isAdmin() {
+      return isSuperAdmin() || (
+        isAuthenticated() && request.auth.token.role == 'admin'
+      );
+    }
+
+    // Public readable educational curriculum content
+    match /grades/{gradeId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /subjects/{subjectId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /curriculumUnits/{unitId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /lessons/{lessonId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /textbooks/{textbookId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    match /supplementaryBooks/{bookId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    match /videoLessons/{videoId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    match /quizzes/{quizId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    match /entranceExamPapers/{paperId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    match /objectivesExams/{examId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    match /flashcardDecks/{deckId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    match /careerGuidanceTracks/{trackId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // User profiles & settings (strictly owned or admin accessible)
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isAuthenticated() && request.auth.uid == userId;
+      allow update: if isOwner(userId) && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'subscriptionStatus'])) || isAdmin();
+      allow delete: if isSuperAdmin();
+    }
+
+    match /studentProfiles/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow write: if isOwner(userId) || isAdmin();
+    }
+
+    match /gamificationProfiles/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow write: if isOwner(userId) || isAdmin();
+    }
+
+    match /mistakeBook/{itemId} {
+      allow read, write: if isAuthenticated() && (resource == null || resource.data.userId == request.auth.uid) || isAdmin();
+    }
+
+    match /quizAttempts/{attemptId} {
+      allow read: if isAuthenticated() && (resource == null || resource.data.userId == request.auth.uid) || isAdmin();
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isAdmin();
+    }
+
+    match /entranceExamResults/{resultId} {
+      allow read: if isAuthenticated() && (resource == null || resource.data.userId == request.auth.uid) || isAdmin();
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isAdmin();
+    }
+
+    match /academicAssignments/{assignmentId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    match /academicSubmissions/{submissionId} {
+      allow read: if isAuthenticated() && (resource == null || resource.data.userId == request.auth.uid) || isAdmin();
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow update: if isOwner(resource.data.userId) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    match /aiChatSessions/{sessionId} {
+      allow read, write: if isAuthenticated() && (resource == null || resource.data.userId == request.auth.uid) || isAdmin();
+    }
+
+    // Payments and Subscriptions: Students can only submit, only Admins can approve
+    match /payments/{paymentId} {
+      allow read: if isAuthenticated() && (resource == null || resource.data.userId == request.auth.uid) || isAdmin();
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid && request.resource.data.status == 'pending';
+      allow update, delete: if isAdmin();
+    }
+
+    match /subscriptions/{subId} {
+      allow read: if isAuthenticated() && (resource == null || resource.data.userId == request.auth.uid) || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    // Feedback
+    match /systemFeedback/{feedbackId} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // Audit logs: Strictly server/admin accessible
+    match /adminAuditLogs/{logId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+  }
+}

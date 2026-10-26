@@ -2,7 +2,10 @@
 
 @layer base {
   body {
-    font-family: 'Plus Jakarta Sans', 'Noto Sans Ethiopic', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: 'Plus Jakarta Sans', 'Noto Sans Ethiopic', 'Cairo', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+  html[dir="rtl"] body {
+    font-family: 'Cairo', 'Plus Jakarta Sans', sans-serif;
   }
 }
 
@@ -29,4 +32,8 @@
 
 .ethiopic-text {
   font-family: 'Noto Sans Ethiopic', sans-serif;
+}
+
+.arabic-text {
+  font-family: 'Cairo', sans-serif;
 }

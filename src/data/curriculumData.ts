@@ -581,3 +581,29 @@ export const LEARNING_MODES = [
     description: 'Exam-level rigor, national exam traps, tricky distractors, time-saving tricks, textbook justifications.'
   }
 ];
+
+import { CURRICULUM_AM } from './curriculum_am';
+import { CURRICULUM_OM } from './curriculum_om';
+import { CURRICULUM_TI } from './curriculum_ti';
+import { CURRICULUM_AR } from './curriculum_ar';
+import { CURRICULUM_SO } from './curriculum_so';
+import { CURRICULUM_EN } from './curriculum_en';
+
+export const getCurriculum = (lang: string = 'am') => {
+  switch (lang) {
+    case 'om':
+      return CURRICULUM_OM;
+    case 'ti':
+      return CURRICULUM_TI;
+    case 'ar':
+      return CURRICULUM_AR;
+    case 'so':
+      return CURRICULUM_SO;
+    case 'en':
+      return CURRICULUM_EN;
+    case 'am':
+    default:
+      return CURRICULUM_AM;
+  }
+};
+

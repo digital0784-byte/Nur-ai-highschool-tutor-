@@ -1,0 +1,930 @@
+PROJECT: NUR AI HIGH SCHOOL TUTOR
+
+COMPLETE FROM-ZERO APPLICATION DEVELOPMENT SPECIFICATION
+
+Ethiopian Curriculum | Grades 9–12 | Mobile-First AI Learning Platform
+
+You are an expert full-stack software architect, AI application developer, Firebase engineer, security engineer, educational technology specialist, UI/UX designer, and quality assurance engineer.
+
+Your task is to build a complete, maintainable, secure, mobile-friendly AI tutoring platform named:
+
+NUR AI High School Tutor
+
+Build this application as a NEW and INDEPENDENT project under the current Google account and Google AI Studio workspace.
+
+This is a fresh project. Do not assume that any previous application's source code, Firebase configuration, database, authentication users, storage bucket, security rules, or deployment settings are available.
+
+Do not merely describe the application. Implement the actual application in the supported development environment, inspect the generated code, run available tests, fix confirmed errors, and report any remaining manual requirements.
+
+Do not claim success for actions that have not actually been performed.
+
+==================================================
+PART 1 — FRESH PROJECT AND ACCOUNT ISOLATION
+
+Create a new application project with the name:
+
+NUR AI High School Tutor
+
+Use a clear, maintainable project structure.
+
+The intended Firebase project ID is:
+
+nur-ai-highschool-tutor
+
+However, this ID may already exist in another Google account. Firebase project IDs must be globally unique and cannot be assumed to be available.
+
+Therefore:
+
+1. Check whether the intended project is accessible in the CURRENT Google account.
+2. If it is available and belongs to this new project, use it only after confirming ownership and intended use.
+3. If it is unavailable, already belongs to another account, or cannot be accessed, do not attempt to take over or modify it.
+4. Ask the owner to create a new Firebase project under the current account, or use a clearly documented available project ID.
+5. Never invent Firebase credentials or project numbers.
+6. Never use credentials copied from another application unless explicitly authorized and verified.
+7. Never connect this new application to the old project "enhanced-melody-mmjvc".
+8. Do not access, modify, delete, migrate, or deploy to any existing unrelated Firebase project.
+9. Do not claim that a new Firebase project has been created unless it has been verified in Firebase Console.
+10. Clearly identify every setup step that requires manual action by the owner.
+
+The new project must have its own verified:
+
+- Firebase project ID.
+- Firebase project number.
+- Firebase Web App configuration.
+- Authentication configuration.
+- Cloud Firestore database.
+- Cloud Storage bucket, if required.
+- Security Rules.
+- Authorized domains and OAuth settings, if required.
+
+Use environment-specific configuration.
+
+Never put private server credentials in frontend source code.
+
+Never commit secret keys, service-account private keys, payment credentials, or unrestricted administrative credentials to GitHub.
+
+==================================================
+PART 2 — APPLICATION OBJECTIVE
+
+Create a digital AI tutor for Ethiopian high school students in Grades 9, 10, 11, and 12.
+
+The application should help students:
+
+- Understand school subjects.
+- Study their curriculum.
+- Ask questions.
+- Receive step-by-step explanations.
+- Practice with quizzes.
+- Upload educational PDFs.
+- Ask questions about images of exercises.
+- Track learning progress.
+- Identify weak topics.
+- Prepare for examinations.
+- Access permitted learning materials on mobile devices.
+
+The platform must be designed for real use, not merely for demonstration.
+
+Do not create fake users, fabricated payment confirmations, fake AI responses, or simulated successful database writes in production workflows.
+
+Clearly label any sample data used for demonstrations.
+
+==================================================
+PART 3 — TECHNOLOGY AND ARCHITECTURE
+
+Inspect the supported Google AI Studio development environment and select a compatible application architecture.
+
+Use a maintainable, modern web application framework supported by the environment.
+
+Use TypeScript where appropriate.
+
+Separate:
+
+- UI components.
+- Application services.
+- Data access.
+- Authentication.
+- Authorization.
+- AI integrations.
+- Server-side operations.
+- Validation.
+- Error handling.
+- Automated tests.
+
+Use Firebase for the backend where supported.
+
+Use Cloud Firestore as the primary document database.
+
+Use Firebase Authentication for identity.
+
+Use Cloud Storage for permitted educational files when needed.
+
+Use trusted server-side functions or endpoints for privileged operations and secret-bearing API integrations.
+
+Do not assume that a particular Firebase product or API has been enabled.
+
+Verify prerequisites and explain any manual setup that is necessary.
+
+==================================================
+PART 4 — DESIGN AND USER EXPERIENCE
+
+Application name:
+
+NUR AI High School Tutor
+
+Design requirements:
+
+- Professional educational design.
+- Mobile-first layout.
+- Android phone compatibility.
+- Tablet and desktop responsiveness.
+- Clear navigation.
+- Readable typography.
+- Consistent buttons and forms.
+- Accessible controls.
+- Useful loading indicators.
+- Clear success and error messages.
+- Empty-state guidance.
+- Search and filtering where appropriate.
+- Efficient performance on variable mobile networks.
+
+Primary interface language: English.
+
+Provide Amharic interface support where implemented and tested.
+
+Keep translation content organized so that additional Ethiopian languages can be added later.
+
+Provide separate student and administrator interfaces.
+
+Do not display administrative controls to unauthorized users.
+
+Hiding a button is not a substitute for backend authorization.
+
+==================================================
+PART 5 — USER REGISTRATION AND LOGIN
+
+Use Firebase Authentication from the NEW verified Firebase project.
+
+Implement:
+
+- Student registration.
+- Login.
+- Logout.
+- Session persistence.
+- Password reset.
+- Email verification when configured.
+- Form validation.
+- Duplicate-account handling.
+- Invalid-credential handling.
+- Network-error handling.
+- Protected routes.
+- Account-status checks.
+
+Registration workflow:
+
+1. Validate registration fields.
+2. Create the account through Firebase Authentication.
+3. Create the appropriate Firestore profile.
+4. Assign a safe default role.
+5. Handle failures between authentication and profile creation.
+6. Prevent duplicate or inconsistent profiles.
+7. Display the real registration result.
+8. Guide the user through any required email verification or approval.
+
+Never store plaintext passwords in Firestore.
+
+Never trust a role value submitted by the browser.
+
+Never grant administrator privileges merely because a user selected “admin” during registration.
+
+Do not create a hidden master password or public administrator-registration route.
+
+==================================================
+PART 6 — USER ROLES AND ADMIN SECURITY
+
+Support these roles:
+
+1. Student.
+2. Administrator.
+3. Super Administrator.
+
+Students may:
+
+- Access permitted learning content.
+- Update permitted personal profile fields.
+- Take quizzes.
+- View their own progress.
+- View their own subscription information.
+- Use features permitted by their subscription.
+
+Administrators may perform explicitly authorized tasks such as:
+
+- Managing curriculum content.
+- Reviewing student accounts.
+- Managing learning materials.
+- Reviewing payment submissions.
+- Viewing permitted operational reports.
+
+Super Administrators may:
+
+- Manage administrator assignments.
+- Manage platform-level settings.
+- Review security audit information.
+- Perform explicitly authorized privileged operations.
+
+Use least-privilege access.
+
+Use trusted server-side administrative processes and Firebase custom claims where appropriate.
+
+Do not trust client-side role fields as proof of authorization.
+
+If an administrator record is stored in Firestore, users must not be able to create or modify their own authorization records.
+
+Protect all privileged operations on the server.
+
+==================================================
+PART 7 — FIREBASE INITIALIZATION
+
+Create Firebase initialization using the configuration generated for the NEW verified Firebase project.
+
+Use the actual configuration supplied by Firebase Console or the supported Firebase setup integration.
+
+Do not invent:
+
+- API keys.
+- Project IDs.
+- Auth domains.
+- App IDs.
+- Storage bucket names.
+- Sender IDs.
+- Project numbers.
+
+An API key in Firebase client configuration is not, by itself, a substitute for Security Rules or server authorization.
+
+Requirements:
+
+- Initialize Firebase once.
+- Export reusable Firebase services.
+- Handle configuration errors.
+- Prevent accidental connection to the previous project.
+- Document required environment variables.
+- Validate project identity during development.
+- Keep secrets out of client bundles.
+
+The application must not be declared connected until its actual runtime configuration has been verified.
+
+==================================================
+PART 8 — CLOUD FIRESTORE DATABASE
+
+Use Cloud Firestore as the primary database.
+
+Inspect and document the intended data model before creating collections.
+
+Use only collections required by implemented features.
+
+Potential collections include:
+
+- users
+- studentProfiles
+- grades
+- subjects
+- courses
+- units
+- lessons
+- learningMaterials
+- quizzes
+- quizAttempts
+- quizResults
+- assignments
+- assignmentSubmissions
+- studentProgress
+- studyPlans
+- mistakeBook
+- entranceExamProgress
+- subscriptions
+- payments
+- notifications
+- appSettings
+- adminAuditLogs
+
+For every implemented collection, define:
+
+- Purpose.
+- Document structure.
+- Required fields.
+- Data types.
+- Ownership.
+- Read permissions.
+- Write permissions.
+- Validation rules.
+- Trusted server-only fields.
+
+Use consistent document IDs and ownership relationships.
+
+Use server timestamps where appropriate.
+
+Use transactions or batched writes when necessary.
+
+Use pagination for large datasets.
+
+Handle network failures and unavailable services.
+
+Do not create unnecessary duplicate records.
+
+Do not assume that creating an interface automatically creates a working Firestore feature.
+
+Every implemented feature must read or write actual data through the correct authorized service.
+
+==================================================
+PART 9 — FIRESTORE SECURITY RULES
+
+Write restrictive Firestore Security Rules for the NEW project.
+
+Default to denying access unless an operation is explicitly permitted.
+
+Rules must enforce:
+
+- Authentication requirements.
+- Student record ownership.
+- Role-based authorization.
+- Field validation.
+- Protected administrative fields.
+- Protected payment status.
+- Protected subscription status.
+- Protected exam results.
+- Protected audit records.
+- Appropriate access to published educational content.
+
+Students must not:
+
+- Read another student's private records.
+- Change their own role.
+- Grant themselves administrator privileges.
+- Approve their own payments.
+- Activate paid subscriptions by modifying documents.
+- Change protected exam results.
+- Write administrative audit records.
+
+Public curriculum content must be readable only according to the chosen publication policy.
+
+Draft or restricted content must remain private.
+
+Verify that client-submitted fields cannot bypass authorization.
+
+Protect server-side endpoints independently because Firebase Admin SDK operations can bypass Firestore Security Rules.
+
+Test the rules using the Firebase Emulator Suite where available.
+
+Include tests for both allowed and denied operations.
+
+Do not deploy unrestricted rules.
+
+Do not use "allow read, write: if true" for production data.
+
+Do not claim that rules are secure without reviewing and testing them.
+
+Before deployment, show the proposed rules and explain important access decisions.
+
+==================================================
+PART 10 — FIREBASE STORAGE
+
+Configure Cloud Storage only when the feature requires it and the project supports it.
+
+Potential file types:
+
+- Educational PDFs.
+- Approved learning materials.
+- Student assignment files.
+- Profile images if necessary.
+- Other explicitly supported educational resources.
+
+Implement:
+
+- File-type validation.
+- File-size limits.
+- Authorization checks.
+- Appropriate private-file access.
+- Upload progress.
+- Failure handling.
+- Secure download access.
+
+Do not make private student documents publicly accessible.
+
+Do not claim that Storage is configured until the bucket and its access rules have been verified.
+
+==================================================
+PART 11 — ETHIOPIAN CURRICULUM
+
+Support:
+
+- Grade 9.
+- Grade 10.
+- Grade 11.
+- Grade 12.
+
+Core subjects:
+
+- Mathematics.
+- Physics.
+- Chemistry.
+- Biology.
+- Economics.
+
+Allow additional subjects when suitable curriculum resources are available.
+
+Organize learning material by:
+
+- Grade.
+- Subject.
+- Unit.
+- Chapter.
+- Lesson.
+- Learning objective.
+- Worked example.
+- Exercise.
+- Assessment.
+- Reference.
+
+Align content with the applicable Ethiopian curriculum edition.
+
+Do not invent official textbook quotations or claim government approval without evidence.
+
+Allow authorized administrators to upload and organize educational resources.
+
+For each learning resource, store appropriate metadata, such as:
+
+- Title.
+- Grade.
+- Subject.
+- Unit.
+- Source.
+- Curriculum edition.
+- Language.
+- Publication status.
+
+Preserve original document order.
+
+Clearly identify content that has not yet been reviewed.
+
+==================================================
+PART 12 — AI TUTOR
+
+Implement an AI tutor using the supported Gemini API integration.
+
+Verify the supported SDK, model availability, authentication requirements, and quota limits.
+
+Do not assume unlimited free usage.
+
+Never expose private API secrets in client-side code.
+
+Use a trusted server-side endpoint when secrets or privileged operations are required.
+
+Tutor capabilities:
+
+- Explain concepts.
+- Solve problems step by step.
+- Provide worked examples.
+- Offer hints.
+- Generate practice questions.
+- Explain mistakes.
+- Summarize lessons.
+- Answer follow-up questions.
+- Adapt explanations to the selected grade.
+- Support Amharic explanations where available.
+
+For educational answers:
+
+1. Identify the subject and grade.
+2. Explain the relevant concept.
+3. Present reasoning and calculations clearly.
+4. Check results where feasible.
+5. Identify uncertainty.
+6. Encourage independent learning.
+
+Do not claim that AI responses are always correct.
+
+Handle API errors, quota limits, unavailable models, network failures, and malformed responses gracefully.
+
+==================================================
+PART 13 — IMAGE QUESTION SOLVER
+
+Where supported by the chosen AI model, allow students to submit an image of an exercise or question.
+
+Implement:
+
+- Image preview.
+- Image removal.
+- File validation.
+- Upload progress.
+- Question extraction.
+- Step-by-step explanations.
+- Error handling.
+- Requests for clearer images when necessary.
+
+Do not invent text hidden by blur, cropping, or poor image quality.
+
+Protect uploaded images and associated student information.
+
+==================================================
+PART 14 — PDF LEARNING ASSISTANT
+
+Support educational PDF workflows when the necessary processing libraries and services are available.
+
+Provide:
+
+- PDF upload.
+- Document metadata.
+- Page navigation.
+- Page-by-page explanations.
+- Summaries.
+- Definitions.
+- Practice questions.
+- Chapter review.
+- Search where supported.
+
+Preserve page order.
+
+If a PDF is too large to process in one request, process it in identifiable sections.
+
+Never claim that every page has been read when only a subset was processed.
+
+Identify unreadable or missing pages.
+
+Protect uploaded files and comply with applicable copyright restrictions.
+
+==================================================
+PART 15 — QUIZZES AND EXAM PREPARATION
+
+Implement:
+
+- Topic quizzes.
+- Chapter quizzes.
+- Practice examinations.
+- Timed tests where appropriate.
+- Question navigation.
+- Answer submission.
+- Score calculation.
+- Feedback.
+- Explanations.
+- Incorrect-answer review.
+- Performance history.
+- Weak-topic identification.
+
+Label AI-generated questions as practice material, not official examination questions.
+
+Protect finalized assessment results.
+
+Validate important scores on a trusted backend.
+
+Do not trust client-submitted scores for privileged decisions.
+
+Handle interrupted exams and duplicate submissions consistently.
+
+==================================================
+PART 16 — LEARNING PROGRESS
+
+Track appropriate learning metrics:
+
+- Lessons completed.
+- Quiz attempts.
+- Assessment results.
+- Weak topics.
+- Study sessions.
+- Learning goals.
+
+Provide personal progress dashboards.
+
+Allow students to update permitted profile fields.
+
+Prevent unauthorized modification of trusted assessment records.
+
+Never expose a student's private learning records to unrelated students.
+
+==================================================
+PART 17 — SUBSCRIPTIONS AND PRICING
+
+Initial proposed monthly prices:
+
+Grade 9: 160 ETB.
+Grade 10: 180 ETB.
+Grades 11 and 12: 200 ETB.
+
+Treat these prices as configurable proposed values.
+
+Do not claim payment processing works until an actual payment workflow has been integrated and tested.
+
+Subscription states may include:
+
+- pending
+- active
+- expired
+- cancelled
+- rejected
+
+Define:
+
+- Subscription tier.
+- Start date.
+- Expiry date.
+- Payment reference.
+- Verification status.
+
+Only trusted authorized processes may activate paid subscriptions.
+
+Students must not be able to grant themselves paid access through client-side changes.
+
+==================================================
+PART 18 — ETHIOPIAN PAYMENT PROVIDERS
+
+Design an extensible payment architecture for potential providers including:
+
+- Telebirr.
+- Commercial Bank of Ethiopia.
+- Dashen Bank.
+- Bank of Abyssinia.
+
+Before implementing a provider, verify its official API, merchant requirements, credentials, supported payment methods, and transaction verification process.
+
+Do not fabricate API endpoints, merchant credentials, successful payment responses, or webhook signatures.
+
+Never ask students for banking passwords, PINs, or one-time authentication codes.
+
+Keep secret merchant credentials on the server.
+
+Verify transactions through trusted provider responses wherever supported.
+
+Protect against duplicate callbacks and repeated processing.
+
+If only manual receipt review is available, clearly label the process as manual verification.
+
+Do not activate subscriptions merely because a receipt image was uploaded.
+
+==================================================
+PART 19 — ADMIN DASHBOARD
+
+Create a protected administrative interface for authorized users.
+
+Features may include:
+
+- Student account management.
+- Curriculum management.
+- Learning material management.
+- Quiz management.
+- Payment review.
+- Subscription management.
+- Usage reports.
+- Application settings.
+- Error monitoring.
+- Security audit records.
+
+Only implement controls connected to real backend functionality.
+
+Protect privileged actions with server-side authorization.
+
+Record important administrative actions.
+
+Do not expose sensitive data unnecessarily.
+
+==================================================
+PART 20 — NOTIFICATIONS
+
+Provide a foundation for:
+
+- Subscription expiry reminders.
+- Payment status updates.
+- Study reminders.
+- Assignment deadlines.
+- Educational announcements.
+
+Implement delivery only when the required messaging service and configuration are available.
+
+Do not claim push notifications work until they have been tested on supported devices.
+
+==================================================
+PART 21 — MOBILE AND LOW-CONNECTIVITY SUPPORT
+
+Optimize for Android phones and variable network conditions.
+
+Requirements:
+
+- Responsive layout.
+- Efficient loading.
+- Pagination.
+- Caching where appropriate.
+- Clear offline states.
+- Retry controls.
+- Graceful network error handling.
+- Accessible mobile forms.
+
+Offline access must not bypass authentication or reveal restricted data.
+
+Do not claim full offline AI functionality unless it is implemented and tested.
+
+==================================================
+PART 22 — PRIVACY AND STUDENT SAFETY
+
+Treat student information as sensitive.
+
+Collect only information necessary for the educational service.
+
+Protect private profiles, uploaded files, payment records, and learning history.
+
+Avoid collecting precise location or biometric information unless genuinely necessary and appropriately reviewed.
+
+Do not expose private data in logs or URLs.
+
+Document applicable consent, privacy, retention, and account-deletion requirements.
+
+==================================================
+PART 23 — TESTING
+
+Run available automated tests.
+
+Use the Firebase Emulator Suite where appropriate.
+
+Test:
+
+- Registration.
+- Login.
+- Logout.
+- Password recovery.
+- Student profile creation.
+- Role restrictions.
+- Student data isolation.
+- Firestore Security Rules.
+- Storage access.
+- Curriculum access.
+- AI tutor error handling.
+- PDF processing.
+- Quiz submission.
+- Assessment result protection.
+- Subscription state transitions.
+- Payment verification.
+- Administrator authorization.
+
+Do not run destructive tests against unrelated or production data.
+
+Report:
+
+- Tests executed.
+- Tests passed.
+- Tests failed.
+- Tests skipped.
+- Build status.
+- Security checks performed.
+- Remaining limitations.
+
+Do not fabricate test results.
+
+Passing tests do not prove the entire application is vulnerability-free.
+
+==================================================
+PART 24 — BUILD AND RELEASE
+
+Inspect the current environment's build and deployment capabilities.
+
+Distinguish between:
+
+- Source code created.
+- Dependencies installed.
+- Tests executed.
+- Production build completed.
+- Firebase configured.
+- Security Rules deployed.
+- Web application published.
+- Android package generated.
+- Android application installed and tested.
+
+Do not claim one step automatically completes another.
+
+Do not publish or deploy without the required owner approval.
+
+Do not assume that publishing a web application automatically creates or updates an Android APK.
+
+Document any required manual actions.
+
+==================================================
+PART 25 — REQUIRED DEVELOPMENT WORKFLOW
+
+Follow this sequence:
+
+PHASE 1: PROJECT SETUP
+
+- Inspect the current AI Studio workspace.
+- Create or verify the new application.
+- Identify Firebase prerequisites.
+- Confirm the new project's identity.
+- Document required manual actions.
+
+PHASE 2: APPLICATION FOUNDATION
+
+- Build the core UI.
+- Configure routing.
+- Add validation.
+- Establish error handling.
+- Create reusable components.
+
+PHASE 3: FIREBASE
+
+- Initialize the verified Firebase configuration.
+- Configure Authentication.
+- Design Firestore collections.
+- Write and validate Security Rules.
+- Configure Storage if required.
+- Test authorized and unauthorized operations.
+
+PHASE 4: EDUCATIONAL FEATURES
+
+- Implement grade and subject navigation.
+- Implement lessons and learning materials.
+- Implement the AI tutor.
+- Implement PDF and image question workflows.
+- Implement quizzes.
+- Implement progress tracking.
+
+PHASE 5: ADMINISTRATION
+
+- Implement trusted role assignment.
+- Build protected administration workflows.
+- Implement permitted content management.
+- Add audit logging.
+
+PHASE 6: SUBSCRIPTIONS AND PAYMENTS
+
+- Implement subscription state management.
+- Verify actual provider requirements.
+- Integrate payment processing only when credentials and APIs are available.
+- Test transaction verification.
+
+PHASE 7: QUALITY ASSURANCE
+
+- Run tests.
+- Fix confirmed errors.
+- Review security.
+- Validate the production build.
+- Document unimplemented features.
+
+PHASE 8: RELEASE PREPARATION
+
+- Verify the Firebase project ID.
+- Verify authentication.
+- Verify database connectivity.
+- Review Security Rules.
+- Confirm deployment requirements.
+- Present the release report.
+
+Do not skip security or validation steps simply to finish faster.
+
+==================================================
+PART 26 — REQUIRED FINAL REPORT
+
+Provide a final report with these sections:
+
+1. Project Summary.
+2. Application Architecture.
+3. Firebase Project Identity.
+4. Authentication Status.
+5. Firestore Database Status.
+6. Security Rules Status.
+7. Storage Status.
+8. Grade 9–12 Curriculum Features.
+9. AI Tutor Status.
+10. PDF and Image Solver Status.
+11. Quiz and Progress Status.
+12. Administrator Security.
+13. Subscription and Payment Status.
+14. Automated Test Results.
+15. Build Status.
+16. Deployment Status.
+17. Remaining Problems.
+18. Manual Actions Required.
+19. Recommended Next Steps.
+
+For every feature, use an honest status:
+
+- VERIFIED WORKING.
+- IMPLEMENTED AND TESTED.
+- IMPLEMENTED BUT NOT FULLY VERIFIED.
+- NOT IMPLEMENTED.
+- BLOCKED BY EXTERNAL REQUIREMENT.
+- REQUIRES OWNER APPROVAL.
+
+Never report a Firebase project, collection, user, API integration, security deployment, or successful test unless it has actually been verified.
+
+==================================================
+FINAL INSTRUCTION
+
+Build NUR AI High School Tutor as a NEW and INDEPENDENT application under the current Google account.
+
+Use a newly verified Firebase project belonging to this account.
+
+Do not connect to "enhanced-melody-mmjvc".
+
+Do not modify the old application's data.
+
+Do not assume the project ID "nur-ai-highschool-tutor" is available.
+
+Never invent credentials.
+
+Implement real functionality, use secure Firebase access controls, test critical features, and clearly identify what still requires manual setup.
+
+Begin by inspecting the current workspace and identifying the exact setup steps required to build the new application safely.

@@ -1,7 +1,10 @@
 {
-  "name": "NUR AI - Ethiopian High School Personal Tutor",
-  "description": "Official FDRE Ministry of Education New Secondary Curriculum AI Personal Tutor for Grades 9-12 across Natural & Social Science streams, featuring bilingual Amharic, Afaan Oromoo, Tigrinya, and English instruction, ESSLCE exam practice, and verified textbook citations.",
-  "requestFramePermissions": [],
+  "name": "NUR AI High School Tutor",
+  "description": "Mobile-First AI Learning Platform for Ethiopian Secondary Curriculum (Grades 9–12), featuring step-by-step problem derivations, image & PDF question solvers, ESSLCE exam preparation, progress tracking, and bilingual Amharic & English instruction.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ],
   "majorCapabilities": [
     "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
   ]
